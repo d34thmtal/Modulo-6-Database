@@ -9,6 +9,7 @@ const saltRounds = 10;
 const jwtSecretKey = process.env.APP_JWT_SECRET_KEY;
 
 const UserModel = require("../models/Users");
+const passport = require('passport');
 
 router.post('/register', (req, res, next) => {
     const email = req.body.email
@@ -35,12 +36,12 @@ router.post('/register', (req, res, next) => {
             return res.status(201).json(user);
         })
         autoKey.send(message)
-        .then(() =>{
-            console.log("email inviata con succeso");
-        })
-        .catch((error) =>{
-            console.error(error.toStitrng())
-        });
+            .then(() => {
+                console.log("email inviata con succeso");
+            })
+            .catch((error) => {
+                console.error(error.toString())
+            });
     })
 })
 
@@ -93,15 +94,23 @@ router.post('/login', async (req, res, next) => {
 
                 return res.status(200).json(token);
             } else {
-                return res.status(400).json({ success : false, error: 'Invalid password' });
+                return res.status(400).json({ success: false, error: 'Invalid password' });
             }
         } else {
-            return res.status(401).json({ success : false, error: 'Invalid username' });
+            return res.status(401).json({ success: false, error: 'Invalid username' });
         }
     } catch (error) {
         next(error);
     }
 });
+
+router.get('/google-login', passport.authenticate('google'));
+
+router.get('redirect/google',
+    passport.authenticate('google', { failureRedirect: '/register', failureMessage: true }),
+    function (req, res) {
+        res.redirect('/');
+    });
 
 module.exports = router;
 

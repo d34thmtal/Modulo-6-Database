@@ -32,7 +32,7 @@ export default function Details() {
                     <Button variant="primary"></Button>
                 </Card.Body>
             </Card> : ""}
-            
+
 
         </>
 
